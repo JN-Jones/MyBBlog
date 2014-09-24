@@ -41,6 +41,7 @@ function mybblog_activate() {}
 
 function mybblog_deactivate() {}
 
+// This will load all necessary files and set up a few things for us
 function mybblog_set_up()
 {
 	global $lang;
@@ -52,4 +53,27 @@ function mybblog_set_up()
 	require_once MYBB_ROOT."inc/plugins/mybblog/MyBBlogClass.php";
 	require_once MYBB_ROOT."inc/plugins/mybblog/Article.php";
 	require_once MYBB_ROOT."inc/plugins/mybblog/Tag.php";
+}
+
+// Permissions check
+function mybblog_can($perm, $user = false)
+{
+	global $mybb;
+
+	$perm = "mybblog_can_".$perm;
+
+	// The setting doesn't exist
+	if(!isset($mybb->settings[$perm]))
+	    return false;
+
+	// -1 => all
+	if($mybb->settings[$perm] == -1)
+	    return true;
+
+	// empty => none
+	if(empty($mybb->settings[$perm]))
+	    return false;
+
+	// Still here? Check for is_member. $user can be simply passed as we'll use the same as mybb itself does
+	return is_member($mybb->settings[$perm], $user);
 }

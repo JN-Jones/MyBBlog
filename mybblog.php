@@ -6,15 +6,16 @@ $templatelist = "";
 
 require("global.php");
 
-if(!function_exists("mybblog_set_up")) {
+if(!defined("MYBBLOG_LOADED")) {
 	$lang->load("mybblog");
 	error($lang->mybblog_deactivated);
 }
 
 mybblog_set_up();
 
-add_breadcrumb($lang->mybblog);
+add_breadcrumb($lang->mybblog, "mybblog.php");
 
-// Permissions aren't added yet
-//if(!wiki_is_allowed("can_view"))
-//    error_no_permission();
+if(!mybblog_can("view"))
+	error_no_permission();
+
+echo "MyBBlog loaded";

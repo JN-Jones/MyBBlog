@@ -14,3 +14,8 @@ $mybblog_tables[] = "CREATE TABLE mybb_mybblog_articles (
 	content text NOT NULL,
 	PRIMARY KEY (id)
 ) ENGINE=MyISAM;";
+
+$mybblog_tables[] = "CREATE TABLE mybb_mybblog_tags (
+	aid int unsigned NOT NULL default '0',
+	tag varchar(200) NOT NULL default '',
+) ENGINE=MyISAM;";
