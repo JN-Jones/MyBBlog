@@ -19,4 +19,9 @@ class Tag extends MyBBlogClass
 	{
 		return Article::getByID($this->data['aid']);
 	}
+
+	public function __toString()
+	{
+		return $this->data['tag'];
+	}
 }

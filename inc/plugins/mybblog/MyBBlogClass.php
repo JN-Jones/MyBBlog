@@ -74,13 +74,12 @@ abstract class MyBBlogClass
 	}
 
 	// Saves the current object
-	// TODO: Save the child elements
 	public function save()
 	{
 		global $db;
 
 		// Escape everything
-		$data = array_map(array($db, 'escape_string'), $this->data);		
+		$data = array_map(array($db, 'escape_string'), $this->data);
 
 		// Not existant -> insert
 		if($this->data['id'] == -1)

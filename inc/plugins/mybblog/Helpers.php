@@ -35,4 +35,19 @@ class Helpers
 	{
 		return my_date('relative', $date);
 	}
+
+	// Helper to create a preview
+	public static function preview($message, $length = 100, $append = "...", $parse = true)
+	{
+		// Do we still need to parse our message?
+		if($parse)
+		    $message = static::parse($message);
+
+		// If it's short enough: return it
+		if(strlen($message) <= $length)
+		    return $message;
+
+		// Shorten the message and append what should be appended
+		return my_substr($message, 0, $length-strlen($append)).$append;
+	}
 }
