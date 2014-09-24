@@ -52,7 +52,10 @@ function mybblog_set_up()
 	// require our custom classes
 	require_once MYBB_ROOT."inc/plugins/mybblog/MyBBlogClass.php";
 	require_once MYBB_ROOT."inc/plugins/mybblog/Article.php";
+	require_once MYBB_ROOT."inc/plugins/mybblog/Comment.php";
 	require_once MYBB_ROOT."inc/plugins/mybblog/Tag.php";
+
+	require_once MYBB_ROOT."inc/plugins/mybblog/Helpers.php";
 }
 
 // Permissions check

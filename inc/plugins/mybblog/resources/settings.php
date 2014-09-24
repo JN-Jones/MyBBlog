@@ -7,13 +7,6 @@ if(!defined("MYBBLOG_LOADED"))
 }
 
 // Creates an array of our settings
-/*$mybblog_settings[] = array(
-	"name"			=> "mybblog_example_setting",
-	"title"			=> "Example Setting",
-	"description"	=> "This is an example",
-	"optionscode"	=> "yesno",
-	"value"			=> "1"
-);*/
 
 $mybblog_settings[] = array(
 	"name"			=> "mybblog_can_view",

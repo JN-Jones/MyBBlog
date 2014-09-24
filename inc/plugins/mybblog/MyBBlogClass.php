@@ -12,6 +12,8 @@ abstract class MyBBlogClass
 	static protected $cache = array();
 	// The "real" data
 	protected $data = array();
+	// Whether we use timestamps which needs to be touched
+	static protected $timestamps = false;
 	// The table we're operating on
 	static protected $table;
 
@@ -24,7 +26,33 @@ abstract class MyBBlogClass
 	// Save our data
 	public function __construct($data)
 	{
+		// -1 is our "not existant"
+		if(empty($data['id']))
+		    $data['id'] = -1;
+
 		$this->data = $data;
+	}
+
+	// Get all objects
+	public static function getAll($where='', $options=array())
+	{
+		global $db;
+
+		$entries = array();
+		
+		$query = $db->simple_select(static::$table, "*", $where, $options);
+		while ($e = $db->fetch_array($query))
+			$entries[$e['id']] = static::create($e);
+
+		// Merge our current entries to the cache
+		static::$cache = array_merge(static::$cache, $entries);
+			
+		return $entries;
+	}
+
+	public static function getNumber($where='')
+	{
+		return count(static::getAll($where));
 	}
 
 	// Get's the object with that ID
@@ -45,16 +73,38 @@ abstract class MyBBlogClass
 
 	}
 
-	// Delete's an object by ID
-	public static function deleteById($id)
+	// Saves the current object
+	// TODO: Save the child elements
+	public function save()
 	{
 		global $db;
+
+		// Escape everything
+		$data = array_map(array($db, 'escape_string'), $this->data);		
+
+		// Not existant -> insert
+		if($this->data['id'] == -1)
+		{
+			if(static::$timestamps)
+			    $this->data['dateline'] = TIME_NOW;
+		    $this->data['id'] = $db->insert_query(static::table, $data);
+		}
+		// exists -> update
+		else
+			$db->update_query(static::table, $data, "id='{$this->data['id']}'");
+	}
+
+	// Delete the current object
+	public function delete()
+	{
+		global $db;
+
+		$id = $this->data['id'];
 
 		if(isset(static::$cache[$id]))
 		    unset(static::$cache[$id]);
 
 		$db->delete_query(static::$table, "id='{$id}'");
-
 	}
 
 	// Magic PHP methods to use our $data array
