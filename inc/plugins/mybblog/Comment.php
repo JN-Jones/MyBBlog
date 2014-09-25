@@ -9,6 +9,7 @@ if(!defined("MYBBLOG_LOADED"))
 class Comment extends MyBBlogClass
 {
 	static protected $table = "mybblog_comments";
+	static protected $cache = array();
 	static protected $timestamps = true;
 	static protected $user = true;
 	// Our default sql options

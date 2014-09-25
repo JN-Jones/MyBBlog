@@ -9,6 +9,7 @@ if(!defined("MYBBLOG_LOADED"))
 class Tag extends MyBBlogClass
 {
 	static protected $table = "mybblog_tags";
+	static protected $cache = array();
 	// Our default sql options
 	static protected $default_options = array(
 		"order_by"	=> "tag",
@@ -43,6 +44,6 @@ class Tag extends MyBBlogClass
 
 	public function __toString()
 	{
-		return $this->data['tag'];
+		return "<a href=\"mybblog.php?action=tag&tag={$this->data['tag']}\">{$this->data['tag']}</a>";
 	}
 }

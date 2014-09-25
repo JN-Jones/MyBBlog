@@ -4,7 +4,7 @@ $l['mybblog_deactivated'] = "MyBBlog isn't activated";
 
 $l['mybblog_write'] = "Write a new article";
 
-$l['mybblog_articles_none'] = "No articles were wrote till now";
+$l['mybblog_articles_none'] = "No articles were found";
 $l['mybblog_posted'] = "Posted {1} by {2}";
 $l['mybblog_comments'] = "{1} Comments";
 $l['mybblog_tags'] = "Tagged with {1}";

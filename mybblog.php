@@ -27,6 +27,13 @@ $content = $errors = "";
 
 $mybb->input['action'] = $mybb->get_input('action');
 
+if($mybb->input['action'] == "tag")
+{
+	add_breadcrumb($lang->sprintf($lang->mybblog_tags, $mybb->get_input("tag")), "mybblog.php?action=tag&tag={$mybb->get_input('tag')}");
+
+	$articles = Article::getByTag($mybb->get_input("tag"));
+	unset($mybb->input['action']);
+}
 if($mybb->input['action'] == "comment" && $mybb->request_method == "post")
 {
 	// Verify incoming POST request
@@ -134,14 +141,16 @@ if($mybb->input['action'] == "write")
 	$content = eval($templates->render("mybblog_write"));
 }
 
-if(!$mybb->input['action'])
+if(empty($mybb->input['action']))
 {
-	if(Article::getNumber() == 0)
+	if(!isset($articles))
+	    $articles = Article::getAll();
+
+	if(count($articles) == 0 || $articles === false)
 		$content = eval($templates->render("mybblog_articles_none"));
 	else
 	{
-		$arts = Article::getAll();
-		foreach($arts as $article)
+		foreach($articles as $article)
 		{
 			$posted = $lang->sprintf($lang->mybblog_posted, Helpers::formatDate($article->dateline), Helpers::formatUser($article->uid));
 			$preview = Helpers::preview($article->content);

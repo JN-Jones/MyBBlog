@@ -9,6 +9,7 @@ if(!defined("MYBBLOG_LOADED"))
 class Article extends MyBBlogClass
 {
 	static protected $table = "mybblog_articles";
+	static protected $cache = array();
 	static protected $timestamps = true;
 	static protected $user = true;
 	private $comment_cache = array();
@@ -56,6 +57,30 @@ class Article extends MyBBlogClass
 
 		// Still here? Lucky guy
 		return true;
+	}
+
+	public function getByTag($tag)
+	{
+		global $db;
+
+		$tag = $db->escape_string($tag);
+		$tags = Tag::getAll("tag='{$tag}'");
+		$articles = array();
+		foreach($tags as $t)
+		{
+			$a = $t->getArticle();
+			if($a === false)
+			    // The attached article doesn't exist so delete this tag too (should've done automatically but some guys love to work directly on the database)
+				$t->delete();
+			else
+			    $articles[] = $a;
+		}
+
+		if(empty($articles))
+			// This tag isn't used anywhere
+			return false;
+
+		return $articles;
 	}
 
 	// Functions to interact with our comments
