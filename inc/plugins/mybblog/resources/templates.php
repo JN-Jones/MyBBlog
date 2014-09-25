@@ -56,6 +56,46 @@ $mybblog_templates[] = array(
 );
 
 $mybblog_templates[] = array(
+	"title"		=> "mybblog_comment",
+	"template"	=> '<tr>
+	<td class="tcat"><span class="smalltext">{$posted}</span></td>
+</tr>
+<tr>
+	<td class="trow1">{$parsed}</td>
+</tr>'
+);
+
+$mybblog_templates[] = array(
+	"title"		=> "mybblog_comment_form",
+	"template"	=> '<form action="mybblog.php?action=comment" method="post">
+	<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
+  <input type="hidden" name="id" value="{$article->id}" />
+<table border="0" cellspacing="{$theme[\'borderwidth\']}" cellpadding="{$theme[\'tablespace\']}" class="tborder">
+<tr>
+	<td class="thead"><strong>{$lang->mybblog_new_comment}</strong></td>
+</tr>
+<tr>
+	<td class="trow1"><textarea name="comment" id="message" rows="20" cols="70">{$mybb->input[\'comment\']}</textarea>
+		{$codebuttons}</td>
+</tr>
+</table>
+<br />
+<div align="center"><input type="submit" class="button" value="{$lang->mybblog_comment_submit}" /></div>
+</form>'
+);
+
+$mybblog_templates[] = array(
+	"title"		=> "mybblog_comments",
+	"template"	=> '<table border="0" cellspacing="{$theme[\'borderwidth\']}" cellpadding="{$theme[\'tablespace\']}" class="tborder">
+  <tr>
+    <td class="thead">{$lang->mybblog_article_comments}</td>
+  </tr>
+{$my_comments}
+</table>
+<br />'
+);
+
+$mybblog_templates[] = array(
 	"title"		=> "mybblog_write",
 	"template"	=> '<form action="mybblog.php?action=write" method="post">
 	<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />

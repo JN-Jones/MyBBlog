@@ -9,6 +9,10 @@ if(!defined("MYBBLOG_LOADED"))
 class Tag extends MyBBlogClass
 {
 	static protected $table = "mybblog_tags";
+	// Our default sql options
+	static protected $default_options = array(
+		"order_by"	=> "tag",
+	);
 
 	public function validate($hard=true)
 	{

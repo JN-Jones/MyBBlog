@@ -14,10 +14,14 @@ abstract class MyBBlogClass
 	protected $data = array();
 	// Whether we use timestamps which needs to be touched
 	static protected $timestamps = false;
+	// Whether we need to save the user id or not
+	static protected $user = false;
 	// The table we're operating on
 	static protected $table;
 	// An array of errors which the validation produced
 	protected $errors = array();
+	// Our default sql options
+	static protected $default_options = array();
 
 	// Should return a new object with the $data
 	public static function create($data)
@@ -39,6 +43,8 @@ abstract class MyBBlogClass
 	public static function getAll($where='', $options=array())
 	{
 		global $db;
+
+		$options = array_merge(static::getDefaultOptions(), $options);
 
 		$entries = array();
 		
@@ -85,7 +91,7 @@ abstract class MyBBlogClass
 	// Saves the current object
 	public function save()
 	{
-		global $db;
+		global $db, $mybb;
 
 		// First: Validate
 		if(!$this->validate(true))
@@ -99,6 +105,8 @@ abstract class MyBBlogClass
 		{
 			if(static::$timestamps)
 			    $this->data['dateline'] = $data['dateline'] = TIME_NOW;
+			if(static::$user && empty($this->data['uid']))
+			    $this->data['uid'] = $data['uid'] = $mybb->user['uid'];
 			unset($data['id']);
 		    $this->data['id'] = $db->insert_query(static::$table, $data);
 		}
@@ -120,6 +128,22 @@ abstract class MyBBlogClass
 		    unset(static::$cache[$id]);
 
 		$db->delete_query(static::$table, "id='{$id}'");
+	}
+
+	// Get the default SQL options
+	private function getDefaultOptions()
+	{
+		$order_dir = "desc";
+		$order_by = "id";
+		if(static::$timestamps)
+		    $order_by = "dateline";
+
+		$options = array("order_by" => $order_by, "order_dir" => $order_dir);
+
+		if(!empty(static::$default_options))
+		    $options = array_merge($options, static::$default_options);
+
+		return $options;
 	}
 
 	// Error functions

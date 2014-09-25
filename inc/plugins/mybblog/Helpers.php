@@ -50,4 +50,27 @@ class Helpers
 		// Shorten the message and append what should be appended
 		return my_substr($message, 0, $length-strlen($append)).$append;
 	}
+
+	// Create a simple text with (avatar) Username
+	public static function formatUser($user, $avatar = true, $formatName = false)
+	{
+		global $lang;
+
+		if(!is_array($user))
+		    $user = get_user($user);
+
+		$name = $user['username'];
+		if(empty($name))
+		    $name = $lang->guest;
+		if($formatName)
+		    $name = format_name($name, $user['usergroup'], $user['displaygroup']);
+
+		if($avatar)
+		{
+			$favatar = format_avatar($user['avatar'], $user['avatardimensions'], "17x17");
+			$name = "<img src=\"{$favatar['image']}\" {$favatar['width_height']} valign=\"middle\" /> {$name}";
+		}
+
+		return build_profile_link($name, $user['uid']);
+	}
 }

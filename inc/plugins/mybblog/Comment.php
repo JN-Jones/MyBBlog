@@ -10,6 +10,11 @@ class Comment extends MyBBlogClass
 {
 	static protected $table = "mybblog_comments";
 	static protected $timestamps = true;
+	static protected $user = true;
+	// Our default sql options
+	static protected $default_options = array(
+		"order_dir"	=> "asc", // Oldest first
+	);
 
 	public function validate($hard=true)
 	{

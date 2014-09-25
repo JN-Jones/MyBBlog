@@ -5,7 +5,7 @@ $l['mybblog_deactivated'] = "MyBBlog isn't activated";
 $l['mybblog_write'] = "Write a new article";
 
 $l['mybblog_articles_none'] = "No articles were wrote till now";
-$l['mybblog_posted'] = "Posted {1}";
+$l['mybblog_posted'] = "Posted {1} by {2}";
 $l['mybblog_comments'] = "{1} Comments";
 $l['mybblog_tags'] = "Tagged with {1}";
 
@@ -16,6 +16,12 @@ $l['mybblog_tags_desc'] = "Seperated by comma";
 $l['mybblog_article'] = "Article";
 $l['mybblog_article_submit'] = "Save article";
 $l['mybblog_article_written'] = "The article has been saved!";
+
+$l['mybblog_article_comments'] = "Comments";
+
+$l['mybblog_new_comment'] = "Write a new comment";
+$l['mybblog_comment_submit'] = "Save comment";
+$l['mybblog_comment_saved'] = "The comment has been saved!";
 
 $l['mybblog_article_no_title'] = "You haven't entered a valid title";
 $l['mybblog_article_no_content'] = "You haven't entered an article";

@@ -27,6 +27,25 @@ $content = $errors = "";
 
 $mybb->input['action'] = $mybb->get_input('action');
 
+if($mybb->input['action'] == "comment" && $mybb->request_method == "post")
+{
+	// Verify incoming POST request
+	verify_post_check($mybb->get_input('my_post_key'));
+
+	$article = Article::getByID($mybb->get_input("id", 1));
+	if($article === false)
+	    error($lang->mybblog_invalid_article);
+
+	$comment = $article->createComment($mybb->get_input("comment"));
+
+	if($comment->save())
+	    redirect("mybblog.php?action=view&id={$article->id}", $lang->mybblog_comment_saved);
+    else
+    {
+		$mybb->input['action'] = "view";
+		$errors = $comment->getInlineErrors();
+	}
+}
 if($mybb->input['action'] == "view")
 {
 	$article = Article::getByID($mybb->get_input("id", 1));
@@ -35,14 +54,29 @@ if($mybb->input['action'] == "view")
 
 	add_breadcrumb($article->title, "mybblog.php?action=view&id={$article->id}");
 
-	$posted = $lang->sprintf($lang->mybblog_posted, Helpers::formatDate($article->dateline));
+	$posted = $lang->sprintf($lang->mybblog_posted, Helpers::formatDate($article->dateline), Helpers::formatUser($article->uid));
 	$preview = Helpers::parse($article->content);
 	$comments = $lang->sprintf($lang->mybblog_comments, $article->numberComments());
 	$tags = $lang->sprintf($lang->mybblog_tags, implode(", ", $article->getTags()));
 
 	$content = eval($templates->render("mybblog_articles"));
 
-	// TODO: comments table
+	if($article->numberComments() > 0)
+	{
+		foreach($article->getComments() as $comment)
+		{
+			$posted = $lang->sprintf($lang->mybblog_posted, Helpers::formatDate($comment->dateline), Helpers::formatUser($comment->uid));
+			$parsed = Helpers::parse($comment->content);
+			$my_comments .= eval($templates->render("mybblog_comment"));
+		}
+		$content .= eval($templates->render("mybblog_comments"));
+	}
+
+	if(mybblog_can("comment"))
+	{
+		$codebuttons = build_mycode_inserter();
+		$content .= eval($templates->render("mybblog_comment_form"));
+	}
 }
 if($mybb->input['action'] == "write")
 {
@@ -109,7 +143,7 @@ if(!$mybb->input['action'])
 		$arts = Article::getAll();
 		foreach($arts as $article)
 		{
-			$posted = $lang->sprintf($lang->mybblog_posted, Helpers::formatDate($article->dateline));
+			$posted = $lang->sprintf($lang->mybblog_posted, Helpers::formatDate($article->dateline), Helpers::formatUser($article->uid));
 			$preview = Helpers::preview($article->content);
 			$comments = $lang->sprintf($lang->mybblog_comments, $article->numberComments());
 			$tags = $lang->sprintf($lang->mybblog_tags, implode(", ", $article->getTags()));

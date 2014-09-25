@@ -10,6 +10,7 @@ class Article extends MyBBlogClass
 {
 	static protected $table = "mybblog_articles";
 	static protected $timestamps = true;
+	static protected $user = true;
 	private $comment_cache = array();
 	private $tags_cache = array();
 
