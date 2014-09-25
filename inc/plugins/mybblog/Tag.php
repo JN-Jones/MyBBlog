@@ -10,6 +10,23 @@ class Tag extends MyBBlogClass
 {
 	static protected $table = "mybblog_tags";
 
+	public function validate($hard=true)
+	{
+		global $lang;
+
+		// Only test this when saving
+		if($hard === true && (empty($this->data['aid']) || Article::getByID($this->data['aid']) === false))
+			$this->errors[] = $lang->mybblog_invalid_article;
+
+		if(empty($this->data['tag']))
+		    $this->errors[] = $lang->mybblog_tag_no_tag;
+
+		if(!empty($this->errors))
+			return false;
+
+		return true;
+	}
+
 	public static function getByArticle($id)
 	{
 		return static::getAll("aid='{$id}'");

@@ -16,9 +16,11 @@ abstract class MyBBlogClass
 	static protected $timestamps = false;
 	// The table we're operating on
 	static protected $table;
+	// An array of errors which the validation produced
+	protected $errors = array();
 
 	// Should return a new object with the $data
-	protected static function create($data)
+	public static function create($data)
 	{
 		return new static($data);
 	}
@@ -63,9 +65,14 @@ abstract class MyBBlogClass
 		if(isset(static::$cache[$id]))
 		    return static::$cache[$id];
 
+		$class = false;
+
 		$query = $db->simple_select(static::$table, "*", "id='{$id}'");
-		$article = $db->fetch_array($query);
-		$class = static::create($article);
+		if($db->num_rows($query) == 1)
+		{
+			$article = $db->fetch_array($query);
+			$class = static::create($article);
+		}
 
 	    static::$cache[$id] = $class;
 
@@ -73,10 +80,16 @@ abstract class MyBBlogClass
 
 	}
 
+	public abstract function validate($hard=true);
+
 	// Saves the current object
 	public function save()
 	{
 		global $db;
+
+		// First: Validate
+		if(!$this->validate(true))
+		    return false;
 
 		// Escape everything
 		$data = array_map(array($db, 'escape_string'), $this->data);
@@ -85,12 +98,15 @@ abstract class MyBBlogClass
 		if($this->data['id'] == -1)
 		{
 			if(static::$timestamps)
-			    $this->data['dateline'] = TIME_NOW;
-		    $this->data['id'] = $db->insert_query(static::table, $data);
+			    $this->data['dateline'] = $data['dateline'] = TIME_NOW;
+			unset($data['id']);
+		    $this->data['id'] = $db->insert_query(static::$table, $data);
 		}
 		// exists -> update
 		else
 			$db->update_query(static::table, $data, "id='{$this->data['id']}'");
+
+		return true;
 	}
 
 	// Delete the current object
@@ -104,6 +120,16 @@ abstract class MyBBlogClass
 		    unset(static::$cache[$id]);
 
 		$db->delete_query(static::$table, "id='{$id}'");
+	}
+
+	// Error functions
+	public function getErrors()
+	{
+		return $this->errors;
+	}
+	public function getInlineErrors()
+	{
+		return inline_error($this->errors);
 	}
 
 	// Magic PHP methods to use our $data array

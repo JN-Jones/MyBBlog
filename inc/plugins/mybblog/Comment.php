@@ -11,6 +11,23 @@ class Comment extends MyBBlogClass
 	static protected $table = "mybblog_comments";
 	static protected $timestamps = true;
 
+	public function validate($hard=true)
+	{
+		global $lang;
+
+		// Only test this when saving
+		if($hard === true && (empty($this->data['aid']) || Article::getByID($this->data['aid']) === false))
+			$this->errors[] = $lang->mybblog_invalid_article;
+
+		if(empty($this->data['content']))
+		    $this->errors[] = $lang->mybblog_comment_no_content;
+
+		if(!empty($this->errors))
+			return false;
+
+		return true;
+	}
+
 	public static function getByArticle($id)
 	{
 		return static::getAll("aid='{$id}'");
