@@ -28,13 +28,32 @@ $mybblog_templates[] = array(
 );
 
 $mybblog_templates[] = array(
+	"title"		=> "mybblog_article_delete",
+	"template"	=> '<table border="0" cellspacing="{$theme[\'borderwidth\']}" cellpadding="{$theme[\'tablespace\']}" class="tborder">
+<tr>
+	<td class="thead"><strong>{$title}</strong></td>
+</tr>
+<tr>
+	<td class="trow1">{$lang->mybblog_delete_confirm}</td>
+</tr>
+</table>
+<br />
+<form action="mybblog.php" method="post">
+	<input type="hidden" name="action" value="{$mybb->input[\'action\']}" />
+	<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
+	<input type="hidden" name="id" value="{$id}" />
+	<div align="center"><input type="submit" class="button" value="{$lang->delete}" /></div>
+</form>'
+);
+
+$mybblog_templates[] = array(
 	"title"		=> "mybblog_articles",
 	"template"	=> '<table border="0" cellspacing="{$theme[\'borderwidth\']}" cellpadding="{$theme[\'tablespace\']}" class="tborder">
 <tr>
 	<td class="thead"><strong><a href="mybblog.php?action=view&id={$article->id}">{$article->title}</a></strong></td>
 </tr>
 <tr>
-	<td class="tcat"><span class="smalltext">{$posted}</span></td>
+	<td class="tcat"><span class="smalltext">{$posted}</span><span class="smalltext" style="float: right">{$mod_link}</span></td>
 </tr>
 <tr>
 	<td class="trow1">{$preview}</td>
@@ -58,7 +77,7 @@ $mybblog_templates[] = array(
 $mybblog_templates[] = array(
 	"title"		=> "mybblog_comment",
 	"template"	=> '<tr>
-	<td class="tcat"><span class="smalltext">{$posted}</span></td>
+	<td class="tcat"><span class="smalltext">{$posted}</span><span class="smalltext" style="float: right">{$mod_link}</span></td>
 </tr>
 <tr>
 	<td class="trow1">{$parsed}</td>

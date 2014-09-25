@@ -59,6 +59,22 @@ class Article extends MyBBlogClass
 		return true;
 	}
 
+	public function deleteWithChilds()
+	{
+		// Get all comments and delete them
+		$cs = $this->getComments();
+		foreach($cs as $c)
+		    $c->delete();
+
+		// Same for tags
+		$ts = $this->getTags();
+		foreach($ts as $t)
+		    $t->delete();
+
+		// And bye :(
+		$this->delete();
+	}
+
 	public function getByTag($tag)
 	{
 		global $db;
