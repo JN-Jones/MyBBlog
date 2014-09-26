@@ -73,4 +73,55 @@ class Helpers
 
 		return build_profile_link($name, $user['uid']);
 	}
+
+	// Loads and runs our module
+	public static function loadModule($module, $method="")
+	{
+		global $mybb, $templates, $lang, $headerinclude, $header, $errors, $write, $footer;
+
+		// Empty is index
+		if(empty($module))
+		    $module = "index";
+
+		// Unknown module - blank page
+		if(!file_exists(MYBBLOG_PATH."/modules/{$module}.php"))
+		    return;
+
+		if($method != "get" && $method != "post")
+		    $method = $mybb->request_method;
+
+		// Require our nice module classes
+		require_once MYBBLOG_PATH."/modules/{$module}.php";
+
+		// And activate them
+		$classname = "Module_".ucfirst($module);
+		$mc = new $classname();
+
+		// Let's figure out what to do
+		// Something we need to do for post and get?
+		if(method_exists($mc, "start"))
+		    $mc->start();
+
+		// If we have a post method and we're posting -> run it
+		if($method == "post" && method_exists($mc, "post"))
+		{
+			// First we need to verify our post key
+			verify_post_check($mybb->get_input('my_post_key'));
+
+			$content = $mc->post();
+		}
+		// Either we don't have a post method or we're not posting
+		else
+			$content = $mc->get();
+
+		// Do we need to cleanup something?
+		if(method_exists($mc, "finish"))
+		    $mc->finish();
+
+		if(!empty($content))
+		{
+			$mybblog = eval($templates->render("mybblog"));
+			output_page($mybblog);
+		}
+	}
 }

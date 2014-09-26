@@ -5,6 +5,7 @@ if(!defined("IN_MYBB"))
 }
 
 define("MYBBLOG_LOADED", true);
+define("MYBBLOG_PATH", MYBB_ROOT."inc/plugins/mybblog");
 
 function mybblog_info()
 {
@@ -21,19 +22,19 @@ function mybblog_info()
 
 function mybblog_install()
 {
-	require_once MYBB_ROOT."inc/plugins/mybblog/resources/plugin.php";
+	require_once MYBBLOG_PATH."/resources/plugin.php";
 	mybblog_up();
 }
 
 function mybblog_is_installed()
 {
-	require_once MYBB_ROOT."inc/plugins/mybblog/resources/plugin.php";
+	require_once MYBBLOG_PATH."/resources/plugin.php";
 	return mybblog_is_up();
 }
 
 function mybblog_uninstall()
 {
-	require_once MYBB_ROOT."inc/plugins/mybblog/resources/plugin.php";
+	require_once MYBBLOG_PATH."/resources/plugin.php";
 	mybblog_down();
 }
 
@@ -50,12 +51,12 @@ function mybblog_set_up()
 	$lang->load("mybblog");
 
 	// require our custom classes
-	require_once MYBB_ROOT."inc/plugins/mybblog/MyBBlogClass.php";
-	require_once MYBB_ROOT."inc/plugins/mybblog/Article.php";
-	require_once MYBB_ROOT."inc/plugins/mybblog/Comment.php";
-	require_once MYBB_ROOT."inc/plugins/mybblog/Tag.php";
+	require_once MYBBLOG_PATH."/classes/MyBBlogClass.php";
+	require_once MYBBLOG_PATH."/classes/Article.php";
+	require_once MYBBLOG_PATH."/classes/Comment.php";
+	require_once MYBBLOG_PATH."/classes/Tag.php";
 
-	require_once MYBB_ROOT."inc/plugins/mybblog/Helpers.php";
+	require_once MYBBLOG_PATH."/Helpers.php";
 }
 
 // Permissions check

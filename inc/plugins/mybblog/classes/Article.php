@@ -128,7 +128,6 @@ class Article extends MyBBlogClass
 
 		$data['aid'] = $this->data['id'];
 		$comment = Comment::create($data);
-		$this->comment_cache[] = $comment; // Don't save the id! Would cause issues with multiple new tags
 		return $comment;
 	}
 
@@ -161,7 +160,6 @@ class Article extends MyBBlogClass
 
 		$data['aid'] = $this->data['id'];
 		$tag = Tag::create($data);
-		$this->tags_cache[] = $tag; // Don't save the id! Would cause issues with multiple new tags
 		return $tag;
 	}
 }
