@@ -11,6 +11,7 @@ $l['mybblog_comments'] = "{1} Comments";
 $l['mybblog_tags'] = "Tagged with {1}";
 
 $l['mybblog_new_article'] = "Write new article";
+$l['mybblog_edit_article'] = "Edit article";
 $l['mybblog_title'] = "Title";
 $l['mybblog_article_tags'] = "Tags";
 $l['mybblog_tags_desc'] = "Seperated by comma";
@@ -21,6 +22,7 @@ $l['mybblog_article_written'] = "The article has been saved!";
 $l['mybblog_article_comments'] = "Comments";
 
 $l['mybblog_new_comment'] = "Write a new comment";
+$l['mybblog_edit_comment'] = "Edit comment";
 $l['mybblog_comment_submit'] = "Save comment";
 $l['mybblog_comment_saved'] = "The comment has been saved!";
 

@@ -45,7 +45,12 @@ class Module_View
 		if(mybblog_can("comment"))
 		{
 			$codebuttons = build_mycode_inserter();
+			$id = $article->id;
+			$title = $lang->mybblog_new_comment;
+			// We need to fake this here a bit
+			$mybb->input['action'] = "comment";
 			$content .= eval($templates->render("mybblog_comment_form"));
+			$mybb->input['action'] = "view";
 		}
 
 		return $content;

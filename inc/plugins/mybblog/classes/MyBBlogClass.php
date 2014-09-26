@@ -112,7 +112,7 @@ abstract class MyBBlogClass
 		}
 		// exists -> update
 		else
-			$db->update_query(static::table, $data, "id='{$this->data['id']}'");
+			$db->update_query(static::$table, $data, "id='{$this->data['id']}'");
 
 		return true;
 	}

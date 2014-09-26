@@ -77,7 +77,7 @@ $mybblog_templates[] = array(
 $mybblog_templates[] = array(
 	"title"		=> "mybblog_comment",
 	"template"	=> '<tr>
-	<td class="tcat"><span class="smalltext">{$posted}</span><span class="smalltext" style="float: right">{$mod_link}</span></td>
+	<td class="tcat"><span class="smalltext">{$posted}</span><span class="smalltext" style="float: right;">{$mod_link}</span></td>
 </tr>
 <tr>
 	<td class="trow1">{$parsed}</td>
@@ -86,12 +86,13 @@ $mybblog_templates[] = array(
 
 $mybblog_templates[] = array(
 	"title"		=> "mybblog_comment_form",
-	"template"	=> '<form action="mybblog.php?action=comment" method="post">
+	"template"	=> '<form action="mybblog.php" method="post">
+	<input type="hidden" name="action" value="{$mybb->input[\'action\']}" />
 	<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
-  <input type="hidden" name="id" value="{$article->id}" />
+	<input type="hidden" name="id" value="{$id}" />
 <table border="0" cellspacing="{$theme[\'borderwidth\']}" cellpadding="{$theme[\'tablespace\']}" class="tborder">
 <tr>
-	<td class="thead"><strong>{$lang->mybblog_new_comment}</strong></td>
+	<td class="thead"><strong>{$title}</strong></td>
 </tr>
 <tr>
 	<td class="trow1"><textarea name="comment" id="message" rows="20" cols="70">{$mybb->input[\'comment\']}</textarea>
@@ -116,11 +117,13 @@ $mybblog_templates[] = array(
 
 $mybblog_templates[] = array(
 	"title"		=> "mybblog_write",
-	"template"	=> '<form action="mybblog.php?action=write" method="post">
+	"template"	=> '<form action="mybblog.php" method="post">
+	<input type="hidden" name="action" value="{$mybb->input[\'action\']}" />
 	<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
+	<input type="hidden" name="id" value="{$id}" />
 <table border="0" cellspacing="{$theme[\'borderwidth\']}" cellpadding="{$theme[\'tablespace\']}" class="tborder">
 <tr>
-	<td class="thead" colspan="2"><strong>{$lang->mybblog_new_article}</strong></td>
+	<td class="thead" colspan="2"><strong>{$title}</strong></td>
 </tr>
 <tr>
 	<td class="trow1">{$lang->mybblog_title}:</td>

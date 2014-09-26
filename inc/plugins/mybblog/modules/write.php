@@ -67,6 +67,8 @@ class Module_Write
 		add_breadcrumb($lang->mybblog_write, "mybblog.php?action=write");
 
 		$codebuttons = build_mycode_inserter();
+		$id = "";
+		$title = $lang->mybblog_new_article;
 		return eval($templates->render("mybblog_write"));
 	}
 }

@@ -14,6 +14,8 @@ class Article extends MyBBlogClass
 	static protected $user = true;
 	private $comment_cache = array();
 	private $tags_cache = array();
+	private $new_comment_cache = array();
+	private $new_tags_cache = array();
 
 	public function validate($hard=true)
 	{
@@ -45,9 +47,23 @@ class Article extends MyBBlogClass
 			if(!$comment->save())
 			    return false;
 		}
+		foreach($this->new_comment_cache as $comment)
+		{
+			// Make sure the connection is correct
+			$comment->data['aid'] = $this->data['id'];
+			if(!$comment->save())
+			    return false;
+		}
 
 		// Last: tags
 		foreach($this->tags_cache as $tag)
+		{
+			// Make sure the connection is correct
+			$tag->data['aid'] = $this->data['id'];
+			if(!$tag->save())
+			    return false;
+		}
+		foreach($this->new_tags_cache as $tag)
 		{
 			// Make sure the connection is correct
 			$tag->data['aid'] = $this->data['id'];
@@ -67,12 +83,17 @@ class Article extends MyBBlogClass
 		    $c->delete();
 
 		// Same for tags
-		$ts = $this->getTags();
-		foreach($ts as $t)
-		    $t->delete();
+		$this->deleteTags();
 
 		// And bye :(
 		$this->delete();
+	}
+
+	public function deleteTags()
+	{
+		$ts = $this->getTags();
+		foreach($ts as $t)
+		    $t->delete();
 	}
 
 	public function getByTag($tag)
@@ -128,6 +149,7 @@ class Article extends MyBBlogClass
 
 		$data['aid'] = $this->data['id'];
 		$comment = Comment::create($data);
+		$this->new_comment_cache[] = $comment;
 		return $comment;
 	}
 
@@ -160,6 +182,7 @@ class Article extends MyBBlogClass
 
 		$data['aid'] = $this->data['id'];
 		$tag = Tag::create($data);
+		$this->new_tags_cache[] = $tag;
 		return $tag;
 	}
 }
