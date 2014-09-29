@@ -47,7 +47,7 @@ class Module_Edit_comment
 	{
 		global $templates, $mybb, $lang, $theme;
 
-		if(empty($mybb->get_input('comment')))
+		if(!trim($mybb->get_input('comment')))
 		    $mybb->input['comment'] = $this->comment->content;
 
 		$codebuttons = build_mycode_inserter();

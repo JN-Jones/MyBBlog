@@ -25,7 +25,7 @@ class Comment extends MyBBlogClass
 		if($hard === true && (empty($this->data['aid']) || Article::getByID($this->data['aid']) === false))
 			$this->errors[] = $lang->mybblog_invalid_article;
 
-		if(empty($this->data['content']))
+		if(!isset($this->data['content']) || !trim($this->data['content']))
 		    $this->errors[] = $lang->mybblog_comment_no_content;
 
 		if(!empty($this->errors))

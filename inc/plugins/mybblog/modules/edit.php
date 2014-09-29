@@ -76,7 +76,7 @@ class Module_Edit
 	{
 		global $lang, $templates, $mybb, $theme;
 
-		if(empty($mybb->get_input('title')) && empty($mybb->get_input('article')) && empty($mybb->get_input('tags')))
+		if(!trim($mybb->get_input('title')) && !trim($mybb->get_input('article')) && !trim($mybb->get_input('tags')))
 		{
 		    $mybb->input['title'] = $this->article->title;
 		    $mybb->input['article'] = $this->article->content;

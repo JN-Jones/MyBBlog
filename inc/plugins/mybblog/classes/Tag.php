@@ -23,7 +23,7 @@ class Tag extends MyBBlogClass
 		if($hard === true && (empty($this->data['aid']) || Article::getByID($this->data['aid']) === false))
 			$this->errors[] = $lang->mybblog_invalid_article;
 
-		if(empty($this->data['tag']))
+		if(!isset($this->data['tag']) || !trim($this->data['tag']))
 		    $this->errors[] = $lang->mybblog_tag_no_tag;
 
 		if(!empty($this->errors))

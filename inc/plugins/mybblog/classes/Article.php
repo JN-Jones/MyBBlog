@@ -21,10 +21,10 @@ class Article extends MyBBlogClass
 	{
 		global $lang;
 
-		if(empty($this->data['title']))
+		if(!isset($this->data['title']) || !trim($this->data['title']))
 			$this->errors[] = $lang->mybblog_article_no_title;
 
-		if(empty($this->data['content']))
+    	if(!isset($this->data['content']) || !trim($this->data['content']))
 		    $this->errors[] = $lang->mybblog_article_no_content;
 
 		if(!empty($this->errors))
