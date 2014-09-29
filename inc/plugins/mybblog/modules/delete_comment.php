@@ -12,14 +12,16 @@ class Module_Delete_comment
 
 	function start()
 	{
-		global $mybb, $lang;
+		global $mybb, $lang, $plugins;
 
 		$comment = Comment::getByID($mybb->get_input("id", 1));
 		if($comment === false)
-		    error($lang->mybblog_invalid_comment);
-	
-	    if(!mybblog_can("write") && !(mybblog_can("comment") && $comment->uid == $mybb->user['uid']))
-		    error_no_permission();
+			error($lang->mybblog_invalid_comment);
+
+		if(!mybblog_can("write") && !(mybblog_can("comment") && $comment->uid == $mybb->user['uid']))
+			error_no_permission();
+
+		$plugins->run_hooks("mybblog_delete_comment_start", $comment);
 	
 		add_breadcrumb($comment->getArticle()->title, "mybblog.php?action=view&id={$comment->getArticle()->id}");
 		add_breadcrumb($lang->mybblog_article_comments, "mybblog.php?action=view&id={$comment->getArticle()->id}");
@@ -32,8 +34,8 @@ class Module_Delete_comment
 	{
 		global $lang;
 
-	    $this->comment->delete();
-	    redirect("mybblog.php?action=view&id={$this->comment->getArticle()->id}", $lang->mybblog_deleted);
+		$this->comment->delete();
+		redirect("mybblog.php?action=view&id={$this->comment->getArticle()->id}", $lang->mybblog_deleted);
 	}
 
 	function get()

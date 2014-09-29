@@ -10,7 +10,9 @@ class Module_Tag
 {
 	function get()
 	{
-		global $lang, $mybb, $articles;
+		global $lang, $mybb, $articles, $plugins;
+
+		$plugins->run_hooks("mybblog_tag");
 
 		add_breadcrumb($lang->sprintf($lang->mybblog_tags, $mybb->get_input("tag")), "mybblog.php?action=tag&tag={$mybb->get_input('tag')}");
 	

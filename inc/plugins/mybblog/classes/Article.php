@@ -24,8 +24,10 @@ class Article extends MyBBlogClass
 		if(!isset($this->data['title']) || !trim($this->data['title']))
 			$this->errors[] = $lang->mybblog_article_no_title;
 
-    	if(!isset($this->data['content']) || !trim($this->data['content']))
-		    $this->errors[] = $lang->mybblog_article_no_content;
+		if(!isset($this->data['content']) || !trim($this->data['content']))
+			$this->errors[] = $lang->mybblog_article_no_content;
+
+		static::runHook("validate", $this);
 
 		if(!empty($this->errors))
 			return false;
@@ -37,7 +39,7 @@ class Article extends MyBBlogClass
 	{
 		// First: save us to get our ID
 		if(!$this->save())
-		    return false;
+			return false;
 
 		// Next: comments
 		foreach($this->comment_cache as $comment)
@@ -45,14 +47,14 @@ class Article extends MyBBlogClass
 			// Make sure the connection is correct
 			$comment->data['aid'] = $this->data['id'];
 			if(!$comment->save())
-			    return false;
+				return false;
 		}
 		foreach($this->new_comment_cache as $comment)
 		{
 			// Make sure the connection is correct
 			$comment->data['aid'] = $this->data['id'];
 			if(!$comment->save())
-			    return false;
+				return false;
 		}
 
 		// Last: tags
@@ -61,15 +63,17 @@ class Article extends MyBBlogClass
 			// Make sure the connection is correct
 			$tag->data['aid'] = $this->data['id'];
 			if(!$tag->save())
-			    return false;
+				return false;
 		}
 		foreach($this->new_tags_cache as $tag)
 		{
 			// Make sure the connection is correct
 			$tag->data['aid'] = $this->data['id'];
 			if(!$tag->save())
-			    return false;
+				return false;
 		}
+
+		static::runHook("saveWithChilds", $this);
 
 		// Still here? Lucky guy
 		return true;
@@ -80,10 +84,12 @@ class Article extends MyBBlogClass
 		// Get all comments and delete them
 		$cs = $this->getComments();
 		foreach($cs as $c)
-		    $c->delete();
+			$c->delete();
 
 		// Same for tags
 		$this->deleteTags();
+
+		static::runHook("deleteWithChilds", $this);
 
 		// And bye :(
 		$this->delete();
@@ -93,12 +99,16 @@ class Article extends MyBBlogClass
 	{
 		$ts = $this->getTags();
 		foreach($ts as $t)
-		    $t->delete();
+			$t->delete();
 	}
 
-	public function getByTag($tag)
+	public static function getByTag($tag)
 	{
 		global $db;
+
+		static::runHook("getByTag", $tag);
+		if(!trim($tag))
+			return;
 
 		$tag = $db->escape_string($tag);
 		$tags = Tag::getAll("tag='{$tag}'");
@@ -107,10 +117,10 @@ class Article extends MyBBlogClass
 		{
 			$a = $t->getArticle();
 			if($a === false)
-			    // The attached article doesn't exist so delete this tag too (should've done automatically but some guys love to work directly on the database)
+				// The attached article doesn't exist so delete this tag too (should've done automatically but some guys love to work directly on the database)
 				$t->delete();
 			else
-			    $articles[] = $a;
+				$articles[] = $a;
 		}
 
 		if(empty($articles))
@@ -129,7 +139,7 @@ class Article extends MyBBlogClass
 	public function numberComments()
 	{
 		if(empty($this->comment_cache))
-		    $this->getComments();
+			$this->getComments();
 
 		return count($this->comment_cache);
 	}
@@ -139,13 +149,13 @@ class Article extends MyBBlogClass
 		if(empty($this->comment_cache))
 			$this->comment_cache = Comment::getByArticle($this->data['id']);
 
-	    return $this->comment_cache;
+		return $this->comment_cache;
 	}
 
 	public function createComment($data)
 	{
 		if(!is_array($data))
-		    $data = array("content" => $data);
+			$data = array("content" => $data);
 
 		$data['aid'] = $this->data['id'];
 		$comment = Comment::create($data);
@@ -162,7 +172,7 @@ class Article extends MyBBlogClass
 	public function numberTags()
 	{
 		if(empty($this->tags_cache))
-		    $this->getTags();
+			$this->getTags();
 
 		return count($this->tags_cache);
 	}
@@ -172,13 +182,13 @@ class Article extends MyBBlogClass
 		if(empty($this->tags_cache))
 			$this->tags_cache = Tag::getByArticle($this->data['id']);
 
-	    return $this->tags_cache;
+		return $this->tags_cache;
 	}
 
 	public function createTag($data)
 	{
 		if(!is_array($data))
-		    $data = array("tag" => $data);
+			$data = array("tag" => $data);
 
 		$data['aid'] = $this->data['id'];
 		$tag = Tag::create($data);

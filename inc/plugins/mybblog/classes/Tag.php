@@ -24,7 +24,9 @@ class Tag extends MyBBlogClass
 			$this->errors[] = $lang->mybblog_invalid_article;
 
 		if(!isset($this->data['tag']) || !trim($this->data['tag']))
-		    $this->errors[] = $lang->mybblog_tag_no_tag;
+			$this->errors[] = $lang->mybblog_tag_no_tag;
+
+		static::runHook("validate", $this);
 
 		if(!empty($this->errors))
 			return false;

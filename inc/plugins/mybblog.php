@@ -16,7 +16,8 @@ function mybblog_info()
 		"author"		=> "Jones",
 		"authorsite"	=> "http://jonesboard.de/",
 		"version"		=> "1.0",
-		"compatibility" => "18*"
+		"compatibility" => "18*",
+		"codename"		=> "mybblog"
 	);
 }
 
@@ -45,7 +46,7 @@ function mybblog_deactivate() {}
 // This will load all necessary files and set up a few things for us
 function mybblog_set_up()
 {
-	global $lang;
+	global $lang, $plugins;
 
 	// Load our language vars
 	$lang->load("mybblog");
@@ -57,26 +58,31 @@ function mybblog_set_up()
 	require_once MYBBLOG_PATH."/classes/Tag.php";
 
 	require_once MYBBLOG_PATH."/Helpers.php";
+
+	$plugins->run_hooks("mybblog_set_up");
 }
 
 // Permissions check
 function mybblog_can($perm, $user = false)
 {
-	global $mybb;
+	global $mybb, $plugins;
+
+	$arg = array("perm" => &$perm, "user" => &$user);
+	$plugins->run_hooks("mybblog_can", $arg);
 
 	$perm = "mybblog_can_".$perm;
 
 	// The setting doesn't exist
 	if(!isset($mybb->settings[$perm]))
-	    return false;
+		return false;
 
 	// -1 => all
 	if($mybb->settings[$perm] == -1)
-	    return true;
+		return true;
 
 	// empty => none
 	if(empty($mybb->settings[$perm]))
-	    return false;
+		return false;
 
 	// Still here? Check for is_member. $user can be simply passed as we'll use the same as mybb itself does
 	return is_member($mybb->settings[$perm], $user);

@@ -26,7 +26,9 @@ class Comment extends MyBBlogClass
 			$this->errors[] = $lang->mybblog_invalid_article;
 
 		if(!isset($this->data['content']) || !trim($this->data['content']))
-		    $this->errors[] = $lang->mybblog_comment_no_content;
+			$this->errors[] = $lang->mybblog_comment_no_content;
+
+		static::runHook("validate", $this);
 
 		if(!empty($this->errors))
 			return false;

@@ -21,8 +21,10 @@ if(!mybblog_can("view"))
 // Generate our write bar
 $write = "";
 if(mybblog_can("write") && $mybb->input['action'] != "write")
-    $write = eval($templates->render("mybblog_write_bar"));
+	$write = eval($templates->render("mybblog_write_bar"));
 
 $content = $errors = $mod_link = "";
+
+$plugins->run_hooks("mybblog_start");
 
 Helpers::loadModule($mybb->get_input('action'));

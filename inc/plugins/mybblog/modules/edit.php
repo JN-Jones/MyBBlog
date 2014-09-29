@@ -12,14 +12,16 @@ class Module_Edit
 
 	function start()
 	{
-		global $mybb, $lang;
+		global $mybb, $lang, $plugins;
 
 		if(!mybblog_can("write"))
-		    error_no_permission();
+			error_no_permission();
 
 		$article = Article::getByID($mybb->get_input("id", 1));
 		if($article === false)
-		    error($lang->mybblog_invalid_article);
+			error($lang->mybblog_invalid_article);
+
+		$plugins->run_hooks("mybblog_edit_start", $article);
 
 		add_breadcrumb($article->title, "mybblog.php?action=view&id={$article->id}");
 		add_breadcrumb($lang->edit, "mybblog.php?action=edit&id={$article->id}");
@@ -29,7 +31,7 @@ class Module_Edit
 
 	function post()
 	{
-		global $mybb, $lang, $errors;
+		global $mybb, $lang, $errors, $plugins;
 
 		$this->article->title = $mybb->get_input('title');
 		$this->article->content = $mybb->get_input('article');
@@ -40,7 +42,9 @@ class Module_Edit
 		$error = array();
 
 		if(count($tags) == 0)
-		    $error[] = $lang->mybblog_article_no_tags;
+			$error[] = $lang->mybblog_article_no_tags;
+
+		$plugins->run_hooks("mybblog_edit_pre_validate", $this->article);
 
 		if($this->article->validate() && empty($error))
 		{
@@ -54,6 +58,8 @@ class Module_Edit
 
 			if(empty($errors))
 			{
+				$plugins->run_hooks("mybblog_edit_save", $this->article);
+
 				// We need to delete all tags first as we don't know whether they have changed or not
 				$this->article->deleteTags();
 				// This shouldn't fail as we're validating everything above but you never know...
@@ -67,27 +73,29 @@ class Module_Edit
 			$error = array_merge($error, $this->article->getErrors());
 
 		if(!empty($error))
-		    $errors = inline_error($error);
+			$errors = inline_error($error);
 
 		return $this->get();
 	}
 
 	function get()
 	{
-		global $lang, $templates, $mybb, $theme;
+		global $lang, $templates, $mybb, $theme, $plugins;
 
 		if(!trim($mybb->get_input('title')) && !trim($mybb->get_input('article')) && !trim($mybb->get_input('tags')))
 		{
-		    $mybb->input['title'] = $this->article->title;
-		    $mybb->input['article'] = $this->article->content;
+			$mybb->input['title'] = $this->article->title;
+			$mybb->input['article'] = $this->article->content;
 			$tags = $this->article->getTags();
 			$comma = "";
 			foreach($tags as $tag)
 			{
-			    $mybb->input['tags'] .= $comma.$tag->tag;
-			    $comma = ", ";
+				$mybb->input['tags'] .= $comma.$tag->tag;
+				$comma = ", ";
 			}
 		}
+
+		$plugins->run_hooks("mybblog_edit_get");
 
 		$codebuttons = build_mycode_inserter();
 		$id = $this->article->id;

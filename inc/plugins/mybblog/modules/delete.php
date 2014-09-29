@@ -12,14 +12,16 @@ class Module_Delete
 
 	function start()
 	{
-		global $mybb, $lang;
+		global $mybb, $lang, $plugins;
 
 		if(!mybblog_can("write"))
-		    error_no_permission();
+			error_no_permission();
 
 		$article = Article::getByID($mybb->get_input("id", 1));
 		if($article === false)
-		    error($lang->mybblog_invalid_article);
+			error($lang->mybblog_invalid_article);
+
+		$plugins->run_hooks("mybblog_delete_start", $article);
 
 		add_breadcrumb($article->title, "mybblog.php?action=view&id={$article->id}");
 		add_breadcrumb($lang->delete, "mybblog.php?action=delete&id={$article->id}");
@@ -31,8 +33,8 @@ class Module_Delete
 	{
 		global $lang;
 
-	    $this->article->deleteWithChilds();
-	    redirect("mybblog.php", $lang->mybblog_deleted);
+		$this->article->deleteWithChilds();
+		redirect("mybblog.php", $lang->mybblog_deleted);
 	}
 
 	function get()

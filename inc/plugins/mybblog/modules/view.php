@@ -10,12 +10,14 @@ class Module_View
 {
 	function get()
 	{
-		global $mybb, $lang, $templates, $theme;
+		global $mybb, $lang, $templates, $theme, $plugins;
 
 		$article = Article::getByID($mybb->get_input("id", 1));
 		if($article === false)
-		    error($lang->mybblog_invalid_article);
+			error($lang->mybblog_invalid_article);
 	
+		$plugins->run_hooks("mybblog_view_start", $article);
+
 		add_breadcrumb($article->title, "mybblog.php?action=view&id={$article->id}");
 	
 		$posted = $lang->sprintf($lang->mybblog_posted, Helpers::formatDate($article->dateline), Helpers::formatUser($article->uid));
@@ -24,7 +26,9 @@ class Module_View
 		$tags = $lang->sprintf($lang->mybblog_tags, implode(", ", $article->getTags()));
 	
 		if(mybblog_can("write"))
-		    $mod_link = "<a href=\"mybblog.php?action=edit&id={$article->id}\">{$lang->edit}</a> | <a href=\"mybblog.php?action=delete&id={$article->id}\">{$lang->delete}</a>";
+			$mod_link = "<a href=\"mybblog.php?action=edit&id={$article->id}\">{$lang->edit}</a> | <a href=\"mybblog.php?action=delete&id={$article->id}\">{$lang->delete}</a>";
+
+		$plugins->run_hooks("mybblog_view_format", $article);
 	
 		$content = eval($templates->render("mybblog_articles"));
 	
@@ -33,10 +37,13 @@ class Module_View
 			foreach($article->getComments() as $comment)
 			{
 				if(mybblog_can("write") || (mybblog_can("comment") && $comment->uid == $mybb->user['uid']))
-				    $mod_link = "<a href=\"mybblog.php?action=edit_comment&id={$comment->id}\">{$lang->edit}</a> | <a href=\"mybblog.php?action=delete_comment&id={$comment->id}\">{$lang->delete}</a>";
+					$mod_link = "<a href=\"mybblog.php?action=edit_comment&id={$comment->id}\">{$lang->edit}</a> | <a href=\"mybblog.php?action=delete_comment&id={$comment->id}\">{$lang->delete}</a>";
 	
 				$posted = $lang->sprintf($lang->mybblog_posted, Helpers::formatDate($comment->dateline), Helpers::formatUser($comment->uid));
 				$parsed = Helpers::parse($comment->content);
+
+				$plugins->run_hooks("mybblog_view_comment_format", $comment);
+
 				$my_comments .= eval($templates->render("mybblog_comment"));
 			}
 			$content .= eval($templates->render("mybblog_comments"));

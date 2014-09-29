@@ -10,13 +10,17 @@ class Module_Write
 {
 	function start()
 	{
-	   	if(!mybblog_can("write"))
-		    error_no_permission();
+		global $plugins;
+
+		if(!mybblog_can("write"))
+			error_no_permission();
+
+		$plugins->run_hooks("mybblog_write_start");
 	}
 
 	function post()
 	{
-		global $mybb, $lang, $errors;
+		global $mybb, $lang, $errors, $plugins;
 
 		$array = array(
 			"title"		=> $mybb->get_input('title'),
@@ -30,7 +34,9 @@ class Module_Write
 		$error = array();
 
 		if(count($tags) == 0)
-		    $error[] = $lang->mybblog_article_no_tags;
+			$error[] = $lang->mybblog_article_no_tags;
+
+		$plugins->run_hooks("mybblog_write_pre_validate", $article);
 
 		if($article->validate() && empty($error))
 		{
@@ -44,6 +50,8 @@ class Module_Write
 
 			if(empty($errors))
 			{
+				$plugins->run_hooks("mybblog_write_save", $this->article);
+
 				// This shouldn't fail as we're validating everything above but you never know...
 				if($article->saveWithChilds())
 					redirect("mybblog.php?action=view&id={$article->id}", $lang->mybblog_article_written);
@@ -55,16 +63,18 @@ class Module_Write
 			$error = array_merge($error, $article->getErrors());
 
 		if(!empty($error))
-		    $errors = inline_error($error);
+			$errors = inline_error($error);
 
 		return $this->get();
 	}
 
 	function get()
 	{
-		global $lang, $templates, $mybb, $theme;
+		global $lang, $templates, $mybb, $theme, $plugins;
 
 		add_breadcrumb($lang->mybblog_write, "mybblog.php?action=write");
+
+		$plugins->run_hooks("mybblog_write_get");
 
 		$codebuttons = build_mycode_inserter();
 		$id = "";

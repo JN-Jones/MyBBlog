@@ -34,7 +34,9 @@ abstract class MyBBlogClass
 	{
 		// -1 is our "not existant"
 		if(empty($data['id']))
-		    $data['id'] = -1;
+			$data['id'] = -1;
+
+		static::runHook("construct", $data);
 
 		$this->data = $data;
 	}
@@ -47,7 +49,7 @@ abstract class MyBBlogClass
 		$options = array_merge(static::getDefaultOptions(), $options);
 
 		$entries = array();
-		
+
 		$query = $db->simple_select(static::$table, "*", $where, $options);
 		while ($e = $db->fetch_array($query))
 			$entries[$e['id']] = static::create($e);
@@ -69,7 +71,7 @@ abstract class MyBBlogClass
 		global $db;
 
 		if(isset(static::$cache[$id]))
-		    return static::$cache[$id];
+			return static::$cache[$id];
 
 		$class = false;
 
@@ -80,7 +82,7 @@ abstract class MyBBlogClass
 			$class = static::create($article);
 		}
 
-	    static::$cache[$id] = $class;
+		static::$cache[$id] = $class;
 
 		return $class;
 
@@ -95,7 +97,7 @@ abstract class MyBBlogClass
 
 		// First: Validate
 		if(!$this->validate(true))
-		    return false;
+			return false;
 
 		// Escape everything
 		$data = array_map(array($db, 'escape_string'), $this->data);
@@ -103,12 +105,14 @@ abstract class MyBBlogClass
 		// Not existant -> insert
 		if($this->data['id'] == -1)
 		{
+			static::runHook("save", $data);
+
 			if(static::$timestamps)
-			    $this->data['dateline'] = $data['dateline'] = TIME_NOW;
+				$this->data['dateline'] = $data['dateline'] = TIME_NOW;
 			if(static::$user && empty($this->data['uid']))
-			    $this->data['uid'] = $data['uid'] = $mybb->user['uid'];
+				$this->data['uid'] = $data['uid'] = $mybb->user['uid'];
 			unset($data['id']);
-		    $this->data['id'] = $db->insert_query(static::$table, $data);
+			$this->data['id'] = $db->insert_query(static::$table, $data);
 		}
 		// exists -> update
 		else
@@ -125,7 +129,7 @@ abstract class MyBBlogClass
 		$id = $this->data['id'];
 
 		if(isset(static::$cache[$id]))
-		    unset(static::$cache[$id]);
+			unset(static::$cache[$id]);
 
 		$db->delete_query(static::$table, "id='{$id}'");
 	}
@@ -136,12 +140,14 @@ abstract class MyBBlogClass
 		$order_dir = "desc";
 		$order_by = "id";
 		if(static::$timestamps)
-		    $order_by = "dateline";
+			$order_by = "dateline";
 
 		$options = array("order_by" => $order_by, "order_dir" => $order_dir);
 
 		if(!empty(static::$default_options))
-		    $options = array_merge($options, static::$default_options);
+			$options = array_merge($options, static::$default_options);
+
+		static::runHook("getDefaultOptions");
 
 		return $options;
 	}
@@ -157,6 +163,7 @@ abstract class MyBBlogClass
 	}
 
 	// Magic PHP methods to use our $data array
+	// TODO: possible plugin hooks?
 	public function __get($key)
 	{
 		return $this->data[$key];
@@ -175,5 +182,15 @@ abstract class MyBBlogClass
 	public function __unset($key)
 	{
 		unset($this->data[$key]);
+	}
+
+	// Doing some magic to generate nice hooks
+	public function runHook($name, &$arguments="")
+	{
+		global $plugins;
+
+		$class = strtolower(get_called_class());
+		$name = "mybblog_{$class}_{$name}";
+		$plugins->run_hooks($name, $arguments);
 	}
 }

@@ -10,16 +10,21 @@ class Module_Comment
 {
 	function post()
 	{
-		global $mybb, $lang, $errors;
+		global $mybb, $lang, $errors, $plugins;
 
 		$article = Article::getByID($mybb->get_input("id", 1));
 		if($article === false)
-		    error($lang->mybblog_invalid_article);
+			error($lang->mybblog_invalid_article);
+
+		$plugins->run_hooks("mybblog_comment_start", $article);
 		
 		$comment = $article->createComment($mybb->get_input("comment"));
 		
 		if($comment->save())
-		    redirect("mybblog.php?action=view&id={$article->id}", $lang->mybblog_comment_saved);
+		{
+			$plugins->run_hooks("mybblog_comment_save", $comment);
+			redirect("mybblog.php?action=view&id={$article->id}", $lang->mybblog_comment_saved);
+		}
 		else
 		{
 			$errors = $comment->getInlineErrors();
