@@ -6,7 +6,7 @@ if(!defined("MYBBLOG_LOADED"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure MYBBLOG_LOADED is defined.");
 }
 
-class Module_Edit
+class Module_Edit extends JB_Module_Base
 {
 	private $article;
 
@@ -17,13 +17,13 @@ class Module_Edit
 		if(!mybblog_can("write"))
 			error_no_permission();
 
-		$article = Article::getByID($mybb->get_input("id", 1));
+		$article = JB_MyBBlog_Article::getByID($mybb->get_input("id", 1));
 		if($article === false)
 			error($lang->mybblog_invalid_article);
 
 		$plugins->run_hooks("mybblog_edit_start", $article);
 
-		add_breadcrumb($article->title, "mybblog.php?action=view&id={$article->id}");
+		add_breadcrumb(e($article->title), "mybblog.php?action=view&id={$article->id}");
 		add_breadcrumb($lang->edit, "mybblog.php?action=edit&id={$article->id}");
 
 		$this->article = $article;
@@ -94,6 +94,9 @@ class Module_Edit
 				$comma = ", ";
 			}
 		}
+
+		$mybb->input['title'] = e($mybb->input['title']);
+		$mybb->input['tags'] = e($mybb->input['tags']);
 
 		$plugins->run_hooks("mybblog_edit_get");
 

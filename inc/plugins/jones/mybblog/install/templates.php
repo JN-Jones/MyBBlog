@@ -1,13 +1,8 @@
 <?php
 
-// Disallow direct access to this file for security reasons
-if(!defined("MYBBLOG_LOADED"))
-{
-	die("Direct initialization of this file is not allowed.<br /><br />Please make sure MYBBLOG_LOADED is defined.");
-}
+$templateset = "MyBBlog";
 
-// Creates an array of our templates
-$mybblog_templates[] = array(
+$templates[] = array(
 	"title"		=> "mybblog",
 	"template"	=> '<html>
 <head>
@@ -27,7 +22,7 @@ $mybblog_templates[] = array(
 </html>'
 );
 
-$mybblog_templates[] = array(
+$templates[] = array(
 	"title"		=> "mybblog_article_delete",
 	"template"	=> '<table border="0" cellspacing="{$theme[\'borderwidth\']}" cellpadding="{$theme[\'tablespace\']}" class="tborder">
 <tr>
@@ -46,7 +41,7 @@ $mybblog_templates[] = array(
 </form>'
 );
 
-$mybblog_templates[] = array(
+$templates[] = array(
 	"title"		=> "mybblog_articles",
 	"template"	=> '<table border="0" cellspacing="{$theme[\'borderwidth\']}" cellpadding="{$theme[\'tablespace\']}" class="tborder">
 <tr>
@@ -65,7 +60,7 @@ $mybblog_templates[] = array(
 <br />'
 );
 
-$mybblog_templates[] = array(
+$templates[] = array(
 	"title"		=> "mybblog_articles_none",
 	"template"	=> '<table border="0" cellspacing="{$theme[\'borderwidth\']}" cellpadding="{$theme[\'tablespace\']}" class="tborder">
 <tr>
@@ -74,7 +69,7 @@ $mybblog_templates[] = array(
 </table>'
 );
 
-$mybblog_templates[] = array(
+$templates[] = array(
 	"title"		=> "mybblog_comment",
 	"template"	=> '<tr>
 	<td class="tcat"><span class="smalltext">{$posted}</span><span class="smalltext" style="float: right;">{$mod_link}</span></td>
@@ -84,7 +79,7 @@ $mybblog_templates[] = array(
 </tr>'
 );
 
-$mybblog_templates[] = array(
+$templates[] = array(
 	"title"		=> "mybblog_comment_form",
 	"template"	=> '<form action="mybblog.php" method="post">
 	<input type="hidden" name="action" value="{$mybb->input[\'action\']}" />
@@ -104,7 +99,7 @@ $mybblog_templates[] = array(
 </form>'
 );
 
-$mybblog_templates[] = array(
+$templates[] = array(
 	"title"		=> "mybblog_comments",
 	"template"	=> '<table border="0" cellspacing="{$theme[\'borderwidth\']}" cellpadding="{$theme[\'tablespace\']}" class="tborder">
   <tr>
@@ -115,7 +110,7 @@ $mybblog_templates[] = array(
 <br />'
 );
 
-$mybblog_templates[] = array(
+$templates[] = array(
 	"title"		=> "mybblog_write",
 	"template"	=> '<form action="mybblog.php" method="post">
 	<input type="hidden" name="action" value="{$mybb->input[\'action\']}" />
@@ -144,7 +139,7 @@ $mybblog_templates[] = array(
 </form>'
 );
 
-$mybblog_templates[] = array(
+$templates[] = array(
 	"title"		=> "mybblog_write_bar",
 	"template"	=> '<table border="0" cellspacing="{$theme[\'borderwidth\']}" cellpadding="{$theme[\'tablespace\']}" class="tborder">
 <tr>

@@ -6,7 +6,7 @@ if(!defined("MYBBLOG_LOADED"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure MYBBLOG_LOADED is defined.");
 }
 
-class Article extends MyBBlogClass
+class JB_MyBBLog_Article extends JB_MyBBLog_Class
 {
 	static protected $table = "mybblog_articles";
 	static protected $cache = array();
@@ -110,8 +110,8 @@ class Article extends MyBBlogClass
 		if(!trim($tag))
 			return;
 
-		$tag = $db->escape_string($tag);
-		$tags = Tag::getAll("tag='{$tag}'");
+		$tag = dbe($tag);
+		$tags = JB_MyBBlog_Tag::getAll("tag='{$tag}'");
 		$articles = array();
 		foreach($tags as $t)
 		{
@@ -147,7 +147,7 @@ class Article extends MyBBlogClass
 	public function getComments()
 	{
 		if(empty($this->comment_cache))
-			$this->comment_cache = Comment::getByArticle($this->data['id']);
+			$this->comment_cache = JB_MyBBlog_Comment::getByArticle($this->data['id']);
 
 		return $this->comment_cache;
 	}
@@ -158,7 +158,7 @@ class Article extends MyBBlogClass
 			$data = array("content" => $data);
 
 		$data['aid'] = $this->data['id'];
-		$comment = Comment::create($data);
+		$comment = JB_MyBBlog_Comment::create($data);
 		$this->new_comment_cache[] = $comment;
 		return $comment;
 	}
@@ -180,7 +180,7 @@ class Article extends MyBBlogClass
 	public function getTags()
 	{
 		if(empty($this->tags_cache))
-			$this->tags_cache = Tag::getByArticle($this->data['id']);
+			$this->tags_cache = JB_MyBBlog_Tag::getByArticle($this->data['id']);
 
 		return $this->tags_cache;
 	}
@@ -191,7 +191,7 @@ class Article extends MyBBlogClass
 			$data = array("tag" => $data);
 
 		$data['aid'] = $this->data['id'];
-		$tag = Tag::create($data);
+		$tag = JB_MyBBlog_Tag::create($data);
 		$this->new_tags_cache[] = $tag;
 		return $tag;
 	}

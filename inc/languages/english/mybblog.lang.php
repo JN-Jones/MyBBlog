@@ -42,3 +42,16 @@ $l['mybblog_invalid_comment'] = "The comment you specified doesn't exist";
 $l['mybblog_comment_no_content'] = "You haven't entered any comment";
 
 $l['mybblog_tag_no_tag'] = "There's an empty tag";
+
+$l['myalerts_setting_JB_mybblog_new_comment'] = "Receive alert for new comments on your blog posts?";
+$l['myalerts_format_mybblog_new_comment'] = "{1} commented on your blogpost <a href=\"{3}\">{4}</a> ({2})";
+
+$l['mybblog_index'] = "Viewing <a href=\"mybblog.php\">the blog</a>";
+$l['mybblog_writing'] = "Writing a new article";
+$l['mybblog_view'] = "Reading article <a href=\"{1}\">{2}</a>";
+$l['mybblog_tag'] = "Viewing articles tagged with <a href=\"{1}\">{2}</a>";
+$l['mybblog_comment'] = "Commenting on article <a href=\"{1}\">{2}</a>";
+$l['mybblog_edit'] = "Editing article <a href=\"{1}\">{2}</a>";
+$l['mybblog_delete'] = "Deleting an article";
+$l['mybblog_delete_comment'] = "Deleting a comment";
+$l['mybblog_edit_comment'] = "Editing a comment";

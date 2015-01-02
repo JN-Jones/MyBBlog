@@ -6,7 +6,8 @@ $templatelist = "";
 
 require("global.php");
 
-if(!defined("MYBBLOG_LOADED")) {
+if(!defined("MYBBLOG_LOADED"))
+{
 	$lang->load("mybblog");
 	error($lang->mybblog_deactivated);
 }
@@ -27,4 +28,4 @@ $content = $errors = $mod_link = "";
 
 $plugins->run_hooks("mybblog_start");
 
-Helpers::loadModule($mybb->get_input('action'));
+(new JB_Modules())->loadModule();

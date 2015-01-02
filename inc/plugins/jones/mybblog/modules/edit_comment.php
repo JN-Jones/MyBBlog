@@ -6,7 +6,7 @@ if(!defined("MYBBLOG_LOADED"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure MYBBLOG_LOADED is defined.");
 }
 
-class Module_Edit_comment
+class Module_Edit_comment extends JB_Module_Base
 {
 	private $comment;
 
@@ -14,7 +14,7 @@ class Module_Edit_comment
 	{
 		global $mybb, $lang, $plugins;
 
-		$comment = Comment::getByID($mybb->get_input("id", 1));
+		$comment = JB_MyBBlog_Comment::getByID($mybb->get_input("id", 1));
 		if($comment === false)
 			error($lang->mybblog_invalid_comment);
 
@@ -23,7 +23,7 @@ class Module_Edit_comment
 
 		$plugins->run_hooks("mybblog_edit_comment_start", $comment);
 
-		add_breadcrumb($comment->getArticle()->title, "mybblog.php?action=view&id={$comment->getArticle()->id}");
+		add_breadcrumb(e($comment->getArticle()->title), "mybblog.php?action=view&id={$comment->getArticle()->id}");
 		add_breadcrumb($lang->mybblog_article_comments, "mybblog.php?action=view&id={$comment->getArticle()->id}");
 		add_breadcrumb($lang->edit, "mybblog.php?action=edit_comment&id={$comment->id}");
 

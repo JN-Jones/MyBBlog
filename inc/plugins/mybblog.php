@@ -5,43 +5,55 @@ if(!defined("IN_MYBB"))
 }
 
 define("MYBBLOG_LOADED", true);
-define("MYBBLOG_PATH", MYBB_ROOT."inc/plugins/mybblog");
+
+// Test whether core is installed and if so get it up
+defined("JB_CORE_INSTALLED") or require_once MYBB_ROOT."inc/plugins/jones/core/include.php";
 
 function mybblog_info()
 {
-	return array(
+	$info = array(
 		"name"			=> "MyBBlog",
 		"description"	=> "Adds a simple blog to your forum",
 		"website"		=> "http://jonesboard.de/",
 		"author"		=> "Jones",
 		"authorsite"	=> "http://jonesboard.de/",
-		"version"		=> "1.0",
+		"version"		=> "1.1",
 		"compatibility" => "18*",
 		"codename"		=> "mybblog"
 	);
+
+	if(JB_CORE_INSTALLED === true)
+	    return JB_CORE::i()->getInfo($info);
+
+	return $info;
 }
 
 function mybblog_install()
 {
-	require_once MYBBLOG_PATH."/resources/plugin.php";
-	mybblog_up();
+	jb_install_plugin("mybblog");
 }
 
 function mybblog_is_installed()
 {
-	require_once MYBBLOG_PATH."/resources/plugin.php";
-	return mybblog_is_up();
+	global $db;
+
+	return $db->table_exists("mybblog_articles");
 }
 
 function mybblog_uninstall()
 {
-	require_once MYBBLOG_PATH."/resources/plugin.php";
-	mybblog_down();
+	JB_Core::i()->uninstall("mybblog");
 }
 
-function mybblog_activate() {}
+function mybblog_activate()
+{
+	JB_Core::i()->activate("mybblog");
+}
 
-function mybblog_deactivate() {}
+function mybblog_deactivate()
+{
+	JB_Core::i()->deactivate("mybblog");
+}
 
 // This will load all necessary files and set up a few things for us
 function mybblog_set_up()
@@ -50,14 +62,6 @@ function mybblog_set_up()
 
 	// Load our language vars
 	$lang->load("mybblog");
-
-	// require our custom classes
-	require_once MYBBLOG_PATH."/classes/MyBBlogClass.php";
-	require_once MYBBLOG_PATH."/classes/Article.php";
-	require_once MYBBLOG_PATH."/classes/Comment.php";
-	require_once MYBBLOG_PATH."/classes/Tag.php";
-
-	require_once MYBBLOG_PATH."/Helpers.php";
 
 	$plugins->run_hooks("mybblog_set_up");
 }

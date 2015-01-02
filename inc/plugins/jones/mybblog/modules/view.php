@@ -6,22 +6,26 @@ if(!defined("MYBBLOG_LOADED"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure MYBBLOG_LOADED is defined.");
 }
 
-class Module_View
+class Module_View extends JB_Module_Base
 {
+	public $post = false;
+
 	function get()
 	{
 		global $mybb, $lang, $templates, $theme, $plugins;
 
-		$article = Article::getByID($mybb->get_input("id", 1));
+		$article = JB_MyBBlog_Article::getByID($mybb->get_input("id", 1));
 		if($article === false)
 			error($lang->mybblog_invalid_article);
 	
 		$plugins->run_hooks("mybblog_view_start", $article);
 
+		$article->title = e($article->title);
+
 		add_breadcrumb($article->title, "mybblog.php?action=view&id={$article->id}");
 	
-		$posted = $lang->sprintf($lang->mybblog_posted, Helpers::formatDate($article->dateline), Helpers::formatUser($article->uid));
-		$preview = Helpers::parse($article->content);
+		$posted = $lang->sprintf($lang->mybblog_posted, JB_Helpers::formatDate($article->dateline), JB_Helpers::formatUser($article->uid));
+		$preview = JB_Helpers::parse($article->content);
 		$comments = $lang->sprintf($lang->mybblog_comments, $article->numberComments());
 		$tags = $lang->sprintf($lang->mybblog_tags, implode(", ", $article->getTags()));
 	
@@ -39,8 +43,8 @@ class Module_View
 				if(mybblog_can("write") || (mybblog_can("comment") && $comment->uid == $mybb->user['uid']))
 					$mod_link = "<a href=\"mybblog.php?action=edit_comment&id={$comment->id}\">{$lang->edit}</a> | <a href=\"mybblog.php?action=delete_comment&id={$comment->id}\">{$lang->delete}</a>";
 	
-				$posted = $lang->sprintf($lang->mybblog_posted, Helpers::formatDate($comment->dateline), Helpers::formatUser($comment->uid));
-				$parsed = Helpers::parse($comment->content);
+				$posted = $lang->sprintf($lang->mybblog_posted, JB_Helpers::formatDate($comment->dateline), JB_Helpers::formatUser($comment->uid));
+				$parsed = JB_Helpers::parse($comment->content);
 
 				$plugins->run_hooks("mybblog_view_comment_format", $comment);
 

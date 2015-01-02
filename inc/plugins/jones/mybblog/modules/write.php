@@ -6,7 +6,7 @@ if(!defined("MYBBLOG_LOADED"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure MYBBLOG_LOADED is defined.");
 }
 
-class Module_Write
+class Module_Write extends JB_Module_Base
 {
 	function start()
 	{
@@ -26,7 +26,7 @@ class Module_Write
 			"title"		=> $mybb->get_input('title'),
 			"content"	=> $mybb->get_input('article')
 		);
-		$article = Article::create($array);
+		$article = JB_MyBBlog_Article::create($array);
 
 		// This line explodes our tags, trims them and removes empty tags
 		$tags = array_filter(array_map("trim", explode(",", $mybb->get_input('tags'))));
@@ -75,6 +75,9 @@ class Module_Write
 		add_breadcrumb($lang->mybblog_write, "mybblog.php?action=write");
 
 		$plugins->run_hooks("mybblog_write_get");
+
+		$mybb->input['title'] = e($mybb->input['title']);
+		$mybb->input['tags'] = e($mybb->input['tags']);
 
 		$codebuttons = build_mycode_inserter();
 		$id = "";
