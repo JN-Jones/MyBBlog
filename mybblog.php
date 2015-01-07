@@ -28,4 +28,5 @@ $content = $errors = $mod_link = "";
 
 $plugins->run_hooks("mybblog_start");
 
-(new JB_Modules())->loadModule();
+$m = new JB_Modules();
+$m->loadModule();
