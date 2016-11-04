@@ -22,24 +22,24 @@ class JB_MyBBlog_WIO_Handler extends JB_WIO_Base
 		$lang->load("mybblog");
 	}
 
-	public static function getParamsFor($file, $action)
+	public static function getParamsFor($file, $action="")
 	{
 		global $parameters;
-		// Never used at the same timr
+		// Never used at the same time
 		if(isset($parameters['id']))
-		    return (int)$parameters['id'];
+			return (int)$parameters['id'];
 		if(isset($parameters['tag']))
-		    return $parameters['tag'];
+			return $parameters['tag'];
 	}
 
-	public static function buildShowArticle($id, $action)
+	public static function buildShowArticle($id, $action="")
 	{
 		global $lang;
 		$l = "mybblog_{$action}";
 		return $lang->sprintf($lang->$l, "mybblog.php?action=view&id={$id}", static::getArticleName($id));
 	}
 
-	public static function buildTag($tag, $action)
+	public static function buildTag($tag, $action="")
 	{
 		global $lang;
 		return $lang->sprintf($lang->mybblog_tag, "mybblog.php?action=tag&tag=".urlencode($tag), e($tag));

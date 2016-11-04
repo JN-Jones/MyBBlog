@@ -9,7 +9,7 @@ if(!defined("MYBBLOG_LOADED"))
 abstract class JB_MyBBLog_Class extends JB_Classes_StorableObject
 {
 	// Doing some magic to generate nice hooks
-	public function runHook($name, &$arguments="")
+	public function runHook($name, array &$arguments=array())
 	{
 		global $plugins;
 
