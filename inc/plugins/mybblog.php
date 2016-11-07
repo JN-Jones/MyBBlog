@@ -17,7 +17,7 @@ function mybblog_info()
 		"website"		=> "http://jonesboard.de/",
 		"author"		=> "Jones",
 		"authorsite"	=> "http://jonesboard.de/",
-		"version"		=> "1.1.1",
+		"version"		=> "1.1.2",
 		"compatibility" => "18*",
 		"codename"		=> "mybblog"
 	);

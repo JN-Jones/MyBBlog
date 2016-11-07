@@ -8,13 +8,16 @@ if(!defined("MYBBLOG_LOADED"))
 
 abstract class JB_MyBBLog_Class extends JB_Classes_StorableObject
 {
-	// Doing some magic to generate nice hooks
-	public function runHook($name, array &$arguments=array())
+	/**
+	 * Doing some magic to generate nice hooks
+	 * {@inheritdoc}
+	 */
+	public function runHook($name, &$arguments="")
 	{
 		global $plugins;
 
 		$class = strtolower(get_called_class());
 		$name = "mybblog_{$class}_{$name}";
-		$plugins->run_hooks($name, $arguments);
+		return $plugins->run_hooks($name, $arguments);
 	}
 }
